@@ -24,3 +24,20 @@ Open `index.html` in any browser.
    - Sub-items as `1) ...`, `2) ...`
 2. Run `python3 build.py`
 3. Refresh `index.html` in the browser
+
+## Files
+
+- `old.md` — 1995 Constitution
+- `new.md` — 2026 Constitution
+- `index.html` — generated diff page
+- `build.py` — build script
+
+## References
+
+- [1995 Constitution](https://www.akorda.kz/ru/official_documents/constitution)
+- [2026 Constitution](https://rus.baq.kz/polnyy-tekst-proekta-novoy-konstitutsii_300033020)
+
+## License
+
+MIT
+

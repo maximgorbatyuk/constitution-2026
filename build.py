@@ -202,6 +202,121 @@ def find_section(const: Constitution, number: str) -> Optional[Section]:
     return None
 
 
+def extract_summary_sections(md_text: str) -> list:
+    """Extract all level-2 summary sections as (title, markdown_body)."""
+    lines = md_text.splitlines()
+    sections = []
+    current_title = None
+    buffer = []
+
+    for line in lines:
+        if line.startswith('## '):
+            if current_title is not None:
+                body = '\n'.join(buffer).strip()
+                if body:
+                    sections.append((current_title, body))
+            current_title = line[3:].strip()
+            buffer = []
+            continue
+
+        if current_title is not None:
+            buffer.append(line)
+
+    if current_title is not None:
+        body = '\n'.join(buffer).strip()
+        if body:
+            sections.append((current_title, body))
+
+    return sections
+
+
+def slugify_anchor(text: str, fallback: str) -> str:
+    slug = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
+    return slug or fallback
+
+
+def render_inline_markdown(text: str) -> str:
+    """Render inline code spans and bold text."""
+    def render_plain(segment: str) -> str:
+        bold_parts = segment.split('**')
+        out = []
+        for i, bp in enumerate(bold_parts):
+            escaped = html_mod.escape(bp)
+            if i % 2 == 1:
+                out.append(f'<strong>{escaped}</strong>')
+            else:
+                out.append(escaped)
+        return ''.join(out)
+
+    parts = text.split('`')
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:
+            escaped = html_mod.escape(part)
+            out.append(f'<code>{escaped}</code>')
+        else:
+            out.append(render_plain(part))
+    return ''.join(out)
+
+
+def render_summary_html(summary_md: str) -> str:
+    """Render lightweight markdown into HTML."""
+    if not summary_md.strip():
+        return ""
+
+    parts = []
+    list_mode = None
+
+    def close_list() -> None:
+        nonlocal list_mode
+        if list_mode == 'ul':
+            parts.append('</ul>')
+        elif list_mode == 'ol':
+            parts.append('</ol>')
+        list_mode = None
+
+    for raw_line in summary_md.splitlines():
+        line = raw_line.strip()
+
+        if not line:
+            close_list()
+            continue
+
+        if line == '---':
+            close_list()
+            parts.append('<hr class="summary-sep">')
+            continue
+
+        if line.startswith('### '):
+            close_list()
+            parts.append(f"<h4>{render_inline_markdown(line[4:].strip())}</h4>")
+            continue
+
+        if line.startswith('- '):
+            if list_mode != 'ul':
+                close_list()
+                parts.append('<ul>')
+                list_mode = 'ul'
+            parts.append(f"<li>{render_inline_markdown(line[2:].strip())}</li>")
+            continue
+
+        ordered_match = re.match(r'^(\d+)\.\s+(.+)$', line)
+        if ordered_match:
+            if list_mode != 'ol':
+                close_list()
+                parts.append('<ol>')
+                list_mode = 'ol'
+            parts.append(f"<li>{render_inline_markdown(ordered_match.group(2))}</li>")
+            continue
+
+        close_list()
+        parts.append(f"<p>{render_inline_markdown(line)}</p>")
+
+    close_list()
+
+    return '\n'.join(parts)
+
+
 # ─── Word-level diff ──────────────────────────────────────────────
 
 def tokenize(text: str) -> list:
@@ -418,13 +533,42 @@ def has_changes(old_art: Optional[Article], new_art: Optional[Article]) -> bool:
 
 # ─── HTML generation ──────────────────────────────────────────────
 
-def generate_html(old_const: Constitution, new_const: Constitution) -> str:
+def generate_html(old_const: Constitution, new_const: Constitution, summaries: list = None) -> str:
     """Generate the complete HTML page."""
+    if summaries is None:
+        summaries = []
 
     # Build navigation and content
     nav_items = []
     content_sections = []
     section_idx = 0
+
+    if summaries:
+        summary_articles = []
+        summary_cards = []
+        for idx, (summary_title, summary_md) in enumerate(summaries, 1):
+            anchor = f"summary-{slugify_anchor(summary_title, f'section-{idx}') }"
+            summary_articles.append((anchor, summary_title, False))
+            summary_html = render_summary_html(summary_md)
+            summary_cards.append(f'''
+                <article class="summary-source" id="{anchor}">
+                    <h3>{html_mod.escape(summary_title)}</h3>
+                    <div class="summary-content">
+                        {summary_html}
+                    </div>
+                </article>''')
+
+        nav_items.append(('summary', 'Краткие резюме', summary_articles))
+        content_sections.append(f'''
+            <section class="diff-section summary-section collapsed" id="summary">
+                <div class="summary-header" onclick="toggleSummary(this)">
+                    <h2>Краткие резюме изменений</h2>
+                    <span class="summary-toggle-icon">▾</span>
+                </div>
+                <div class="summary-body">
+                    {''.join(summary_cards)}
+                </div>
+            </section>''')
 
     for mapping in SECTION_MAP:
         old_key, new_key, label, is_new = mapping
@@ -802,6 +946,114 @@ body {{
     margin-top: 12px;
 }}
 
+/* ─── Summary Block ─── */
+.summary-section {{
+    background: #fff;
+    border: 1px solid #E5E5E0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+}}
+
+.summary-header h2 {{
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}}
+
+.summary-header {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #EFEFEA;
+}}
+
+.summary-toggle-icon {{
+    margin-left: auto;
+    color: #bbb;
+    font-size: 14px;
+    transition: transform 0.2s;
+}}
+
+.summary-section.collapsed .summary-toggle-icon {{
+    transform: rotate(-90deg);
+}}
+
+.summary-body {{
+    padding-top: 16px;
+}}
+
+.summary-section.collapsed .summary-body {{
+    display: none;
+}}
+
+.summary-source {{
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #EFEFEA;
+}}
+
+.summary-source:first-of-type {{
+    margin-top: 2px;
+    padding-top: 0;
+    border-top: none;
+}}
+
+.summary-source h3 {{
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 10px;
+}}
+
+.summary-content h4 {{
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #E8751A;
+    margin: 16px 0 8px;
+}}
+
+.summary-content p {{
+    margin: 0 0 10px;
+    color: #333;
+}}
+
+.summary-content ul {{
+    margin: 0 0 14px 18px;
+    padding: 0;
+}}
+
+.summary-content ol {{
+    margin: 0 0 14px 20px;
+    padding: 0;
+}}
+
+.summary-content li {{
+    margin-bottom: 8px;
+    color: #333;
+}}
+
+.summary-sep {{
+    border: none;
+    border-top: 1px solid #E5E5E0;
+    margin: 14px 0;
+}}
+
+.summary-content code {{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92em;
+    background: #F5F5F0;
+    border-radius: 4px;
+    padding: 1px 6px;
+}}
+
 /* ─── Sections ─── */
 .diff-section {{
     margin-bottom: 48px;
@@ -1166,6 +1418,26 @@ function toggleArticle(header) {{
     header.closest('.article-card').classList.toggle('collapsed');
 }}
 
+function toggleSummary(header) {{
+    header.closest('.summary-section').classList.toggle('collapsed');
+}}
+
+function expandSummaryForAnchor() {{
+    var hash = window.location.hash;
+    if (!hash || hash.length < 2) return;
+
+    var targetId = decodeURIComponent(hash.slice(1));
+    var target = document.getElementById(targetId);
+    var summary = document.getElementById('summary');
+
+    if (target && summary && summary.contains(target)) {{
+        summary.classList.remove('collapsed');
+    }}
+}}
+
+expandSummaryForAnchor();
+window.addEventListener('hashchange', expandSummaryForAnchor);
+
 // ─── Scroll spy ───
 (function() {{
     var sections = document.querySelectorAll('.diff-section');
@@ -1214,6 +1486,17 @@ def main():
     with open('new.md', 'r', encoding='utf-8') as f:
         new_text = f.read()
 
+    summaries = []
+    try:
+        with open('summary.md', 'r', encoding='utf-8') as f:
+            summaries = extract_summary_sections(f.read())
+        if summaries:
+            print(f"Loaded summaries: {len(summaries)} section(s)")
+        else:
+            print("summary.md found, but no level-2 summary sections were detected")
+    except FileNotFoundError:
+        print("summary.md not found; building without summary blocks")
+
     print("Parsing constitutions...")
     old_const = parse_constitution(old_text)
     new_const = parse_constitution(new_text)
@@ -1224,7 +1507,7 @@ def main():
           f"{sum(len(s.articles) for s in new_const.sections)} articles")
 
     print("Generating diff HTML...")
-    html = generate_html(old_const, new_const)
+    html = generate_html(old_const, new_const, summaries)
 
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
