@@ -66,6 +66,35 @@ body {
     text-transform: uppercase;
 }
 
+.nav-github {
+    padding: 6px 0 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #EDEDE8;
+}
+
+.nav-github-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+    padding: 0 20px 8px;
+}
+
+.nav-github-link {
+    display: block;
+    padding: 5px 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.nav-github-link:hover {
+    color: #E8751A;
+    background: #FFF8F2;
+}
+
 .nav-section {
     margin-bottom: 2px;
 }
@@ -155,7 +184,32 @@ body {
 .site-header .subtitle {
     font-size: 15px;
     color: #888;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
+}
+
+.site-github-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.site-github-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid #E5E5E0;
+    background: #fff;
+    transition: all 0.15s;
+}
+
+.site-github-link:hover {
+    color: #E8751A;
+    border-color: #F1C79D;
+    background: #FFF8F2;
 }
 
 .legend {
@@ -625,6 +679,11 @@ blockquote {
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-title">Содержание</div>
         
+        <div class="nav-github">
+            <div class="nav-github-title">GitHub</div>
+            <a href="https://github.com/maximgorbatyuk/constitution-2026" class="nav-github-link" target="_blank" rel="noopener noreferrer">Репозиторий ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/old.md" class="nav-github-link" target="_blank" rel="noopener noreferrer">old.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/new.md" class="nav-github-link" target="_blank" rel="noopener noreferrer">new.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/summary.md" class="nav-github-link" target="_blank" rel="noopener noreferrer">summary.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/build.py" class="nav-github-link" target="_blank" rel="noopener noreferrer">build.py ↗</a>
+        </div>
+    
             <div class="nav-section">
                 <a href="#summary" class="nav-section-link">Краткие резюме</a>
                 <div class="nav-articles"><a href="#summary-claude-opus-4-6" class="nav-article">Claude Opus 4.6</a><a href="#summary-codex-5-3" class="nav-article">Codex 5.3</a></div>
@@ -684,6 +743,7 @@ blockquote {
         <header class="site-header">
             <h1>Сравнение Конституций Республики Казахстан</h1>
             <div class="subtitle">Конституция 1995 года — Конституция 2026 года</div>
+            <div class="site-github-links"><a href="https://github.com/maximgorbatyuk/constitution-2026" class="site-github-link" target="_blank" rel="noopener noreferrer">Репозиторий ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/old.md" class="site-github-link" target="_blank" rel="noopener noreferrer">old.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/new.md" class="site-github-link" target="_blank" rel="noopener noreferrer">new.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/summary.md" class="site-github-link" target="_blank" rel="noopener noreferrer">summary.md ↗</a><a href="https://github.com/maximgorbatyuk/constitution-2026/blob/main/build.py" class="site-github-link" target="_blank" rel="noopener noreferrer">build.py ↗</a></div>
             <div class="legend">
                 <div class="legend-item"><span class="legend-del">удалено</span> Удалённый текст</div>
                 <div class="legend-item"><span class="legend-ins">добавлено</span> Добавленный текст</div>

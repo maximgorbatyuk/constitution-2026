@@ -12,6 +12,10 @@ from typing import Optional
 import html as html_mod
 
 
+GITHUB_REPO_URL = "https://github.com/maximgorbatyuk/constitution-2026"
+GITHUB_BRANCH = "main"
+
+
 # ─── Data structures ──────────────────────────────────────────────
 
 @dataclass
@@ -740,7 +744,30 @@ def generate_html(old_const: Constitution, new_const: Constitution, summaries: l
                 {art_links}
             </div>''')
 
-    nav_html = ''.join(nav_html_parts)
+    github_links = [
+        ('Репозиторий', GITHUB_REPO_URL),
+        ('old.md', f'{GITHUB_REPO_URL}/blob/{GITHUB_BRANCH}/old.md'),
+        ('new.md', f'{GITHUB_REPO_URL}/blob/{GITHUB_BRANCH}/new.md'),
+        ('summary.md', f'{GITHUB_REPO_URL}/blob/{GITHUB_BRANCH}/summary.md'),
+        ('build.py', f'{GITHUB_REPO_URL}/blob/{GITHUB_BRANCH}/build.py'),
+    ]
+
+    nav_github_html = ''.join(
+        f'<a href="{html_mod.escape(url)}" class="nav-github-link" target="_blank" rel="noopener noreferrer">{html_mod.escape(label)} ↗</a>'
+        for label, url in github_links
+    )
+
+    header_github_html = ''.join(
+        f'<a href="{html_mod.escape(url)}" class="site-github-link" target="_blank" rel="noopener noreferrer">{html_mod.escape(label)} ↗</a>'
+        for label, url in github_links
+    )
+
+    nav_html = f'''
+        <div class="nav-github">
+            <div class="nav-github-title">GitHub</div>
+            {nav_github_html}
+        </div>
+    ''' + ''.join(nav_html_parts)
     content_html = ''.join(content_sections)
 
     # Count stats
@@ -813,6 +840,35 @@ body {{
     margin-bottom: 8px;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+}}
+
+.nav-github {{
+    padding: 6px 0 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #EDEDE8;
+}}
+
+.nav-github-title {{
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #999;
+    padding: 0 20px 8px;
+}}
+
+.nav-github-link {{
+    display: block;
+    padding: 5px 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 1.4;
+}}
+
+.nav-github-link:hover {{
+    color: #E8751A;
+    background: #FFF8F2;
 }}
 
 .nav-section {{
@@ -904,7 +960,32 @@ body {{
 .site-header .subtitle {{
     font-size: 15px;
     color: #888;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
+}}
+
+.site-github-links {{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}}
+
+.site-github-link {{
+    color: #666;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid #E5E5E0;
+    background: #fff;
+    transition: all 0.15s;
+}}
+
+.site-github-link:hover {{
+    color: #E8751A;
+    border-color: #F1C79D;
+    background: #FFF8F2;
 }}
 
 .legend {{
@@ -1381,6 +1462,7 @@ blockquote {{
         <header class="site-header">
             <h1>Сравнение Конституций Республики Казахстан</h1>
             <div class="subtitle">Конституция 1995 года — Конституция 2026 года</div>
+            <div class="site-github-links">{header_github_html}</div>
             <div class="legend">
                 <div class="legend-item"><span class="legend-del">удалено</span> Удалённый текст</div>
                 <div class="legend-item"><span class="legend-ins">добавлено</span> Добавленный текст</div>
