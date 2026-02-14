@@ -36,6 +36,7 @@ Open `index.html` in any browser.
 
 - [1995 Constitution](https://www.akorda.kz/ru/official_documents/constitution)
 - [2026 Constitution](https://rus.baq.kz/polnyy-tekst-proekta-novoy-konstitutsii_300033020)
+- [Закон о выборах РК, статья 54](https://adilet.zan.kz/rus/docs/Z950002464_#z263)
 
 ## License
 
