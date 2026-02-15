@@ -779,10 +779,76 @@ def generate_html(old_const: Constitution, new_const: Constitution, summaries: l
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Сравнение Конституций Республики Казахстан</title>
+
+<!-- Primary Meta Tags -->
+<title>Сравнение Конституций Республики Казахстан 2022 и 2026</title>
+<meta name="title" content="Сравнение Конституций Республики Казахстан 2022 и 2026">
+<meta name="description" content="Детальное сравнение изменений в Конституции Республики Казахстан. Интерактивный анализ всех поправок, дополнений и изменений между версиями 2022 и 2026 года.">
+<meta name="keywords" content="Конституция Казахстана, поправки в конституцию, изменения конституции РК, Конституция 2022, Конституция 2026, сравнение конституций, Kazakhstan constitution">
+<meta name="author" content="Maxim Gorbatyuk">
+<meta name="language" content="Russian">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mgorbatyuk.dev/constitution-2026/">
+<meta property="og:title" content="Сравнение Конституций Республики Казахстан 2022 и 2026">
+<meta property="og:description" content="Детальное сравнение изменений в Конституции Республики Казахстан. Интерактивный анализ всех поправок, дополнений и изменений между версиями 2022 и 2026 года.">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Сравнение Конституций РК">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary">
+<meta property="twitter:url" content="https://mgorbatyuk.dev/constitution-2026/">
+<meta property="twitter:title" content="Сравнение Конституций Республики Казахстан 2022 и 2026">
+<meta property="twitter:description" content="Детальное сравнение изменений в Конституции Республики Казахстан. Интерактивный анализ всех поправок, дополнений и изменений между версиями 2022 и 2026 года.">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://mgorbatyuk.dev/constitution-2026/">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2EH82M3JKQ"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-2EH82M3JKQ');
+</script>
+
+<!-- Preconnect for Performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Сравнение Конституций Республики Казахстан 2022 и 2026",
+  "description": "Детальное сравнение изменений в Конституции Республики Казахстан между версиями 2022 и 2026 года",
+  "url": "https://mgorbatyuk.dev/constitution-2026/",
+  "inLanguage": "ru",
+  "author": {{
+    "@type": "Person",
+    "name": "Maxim Gorbatyuk",
+    "url": "https://github.com/maximgorbatyuk"
+  }},
+  "publisher": {{
+    "@type": "Person",
+    "name": "Maxim Gorbatyuk"
+  }},
+  "mainEntity": {{
+    "@type": "Article",
+    "headline": "Сравнение Конституций Республики Казахстан",
+    "about": "Конституция Республики Казахстан",
+    "keywords": "Конституция Казахстана, поправки, изменения, 2022, 2026"
+  }}
+}}
+</script>
 <style>
 /* ─── Reset & Base ─── */
 *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
