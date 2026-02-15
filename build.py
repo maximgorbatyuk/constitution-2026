@@ -1513,6 +1513,37 @@ blockquote {{
     background: #DDD;
     border-radius: 2px;
 }}
+
+/* ─── Warning Block ─── */
+.ai-warning {{
+    background: linear-gradient(135deg, #FFF8E6 0%, #FFEED4 100%);
+    border: 1px solid #F5C87A;
+    border-left: 4px solid #E8A84C;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-family: 'Inter', sans-serif;
+}}
+
+.ai-warning-title {{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #9A6B1B;
+    margin-bottom: 8px;
+}}
+
+.ai-warning-icon {{
+    font-size: 18px;
+}}
+
+.ai-warning-text {{
+    font-size: 13px;
+    line-height: 1.6;
+    color: #7A5A1A;
+}}
 </style>
 </head>
 <body>
@@ -1535,6 +1566,17 @@ blockquote {{
             </div>
             <div class="stats">{total_old_articles} статей (1995) → {total_new_articles} статей (2026) · {len(old_const.sections)} разделов → {len(new_const.sections)} разделов</div>
         </header>
+
+        <div class="ai-warning">
+            <div class="ai-warning-title">
+                <span class="ai-warning-icon">⚠️</span>
+                <span>Внимание!</span>
+            </div>
+            <div class="ai-warning-text">
+                Сводка подготовлена ИИ, а не юристом, и ИИ может допускать ошибки. Данный сайт предназначен для
+                ознакомления и не несет цели склонить избирателя в ту или иную сторону.
+            </div>
+        </div>
 
         {content_html}
     </main>
